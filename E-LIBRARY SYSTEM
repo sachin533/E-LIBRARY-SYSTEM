@@ -1,0 +1,151 @@
+import java.util.*;
+
+// Book class to represent a book
+class Book {
+    private String title;
+    private String author;
+    private String category;
+    private boolean isAvailable;
+
+    public Book(String title, String author, String category) {
+        this.title = title;
+        this.author = author;
+        this.category = category;
+        this.isAvailable = true;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(boolean available) {
+        isAvailable = available;
+    }
+}
+
+// User class to represent a library user
+class User {
+    private String username;
+    private String password;
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+}
+
+// Library class to manage books and users
+class Library {
+    private Map<String, Book> books;
+    private Map<String, User> users;
+
+    public Library() {
+        books = new HashMap<>();
+        users = new HashMap<>();
+    }
+
+    // Method to add a book to the library
+    public void addBook(Book book) {
+        books.put(book.getTitle(), book);
+    }
+
+    // Method to remove a book from the library
+    public void removeBook(String title) {
+        books.remove(title);
+    }
+
+    // Method to register a new user
+    public void registerUser(User user) {
+        users.put(user.getUsername(), user);
+    }
+
+    // Method to authenticate a user
+    public boolean authenticateUser(String username, String password) {
+        User user = users.get(username);
+        return user != null && user.getPassword().equals(password);
+    }
+
+    // Method to borrow a book
+    public void borrowBook(String title, String username) {
+        Book book = books.get(title);
+        if (book != null && book.isAvailable()) {
+            book.setAvailable(false);
+            System.out.println("Book '" + title + "' borrowed by " + username);
+        } else {
+            System.out.println("Book '" + title + "' is not available for borrowing");
+        }
+    }
+
+    // Method to return a book
+    public void returnBook(String title) {
+        Book book = books.get(title);
+        if (book != null) {
+            book.setAvailable(true);
+            System.out.println("Book '" + title + "' returned");
+        } else {
+            System.out.println("Book '" + title + "' not found in the library");
+        }
+    }
+
+    // Method to display all books by category
+    public void displayBooksByCategory(String category) {
+        System.out.println("Books in category '" + category + "':");
+        for (Book book : books.values()) {
+            if (book.getCategory().equalsIgnoreCase(category)) {
+                System.out.println(book.getTitle() + " by " + book.getAuthor());
+            }
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Library library = new Library();
+
+        // Add books to the library
+        library.addBook(new Book("Java Programming", "John Doe", "Programming"));
+        library.addBook(new Book("Python Basics", "Jane Smith", "Programming"));
+        library.addBook(new Book("History of World War II", "Robert Johnson", "History"));
+
+        // Register users
+        library.registerUser(new User("user1", "password1"));
+        library.registerUser(new User("user2", "password2"));
+
+        // Authenticate users
+        String username = "user1";
+        String password = "password1";
+        if (library.authenticateUser(username, password)) {
+            System.out.println("Authentication successful for user: " + username);
+        } else {
+            System.out.println("Authentication failed for user: " + username);
+        }
+
+        // Borrow and return books
+        library.borrowBook("Java Programming", "user1");
+        library.borrowBook("Python Basics", "user2");
+        library.returnBook("Java Programming");
+
+        // Display books by category
+        library.displayBooksByCategory("Programming");
+    }
+}
